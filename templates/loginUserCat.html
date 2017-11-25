@@ -1,0 +1,25 @@
+<div class="row padding-top padding-bottom">
+  <div class="col-md-1"></div>
+  <div class="col-md-4 padding-none">
+    <a href="{{url_for('newCategory')}}">
+      <button class="btn btn-default btn-lg" style="background-color:black;padding: 16px;font-size: 20px;border: 2px solid #0fbcdb;color:white">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add new Medication Category
+      </button>
+    </a>
+  </div>
+
+    <div class="col-md-7 padding-none">
+
+    <a href="{{ url_for('editCategory',medcat=categoryM.category)}}">
+      <button class="btn btn-default btn-lg"  style="background-color:black;padding: 16px;font-size: 20px;border: 2px solid #0fbcdb;color:white">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Medication Category
+      </button>
+    </a>
+
+      <a href="{{ url_for('deleteCategory',medcat=categoryM.category)}}">
+        <button class="btn btn-info btn-lg" style="background-color:black;padding: 16px;font-size: 20px;border: 2px solid #0fbcdb;color:white">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true" ></span> Delete Medication Category
+        </button>
+      </a>
+    </div>
+</div>

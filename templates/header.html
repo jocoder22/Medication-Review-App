@@ -1,0 +1,47 @@
+
+<style media="screen">
+.big {
+	width:100%;
+	background-size: cover;
+	background-image: url('/static/pharm4.jpg');
+	height: 150px;
+	background-position: right;
+	background-repeat: no-repeat;
+	}
+	.padd {
+		margin-right: 80px;
+	}
+
+	.bbn {
+		background-color:black;
+		padding: 6px;
+		font-size: 20px;border:
+		2px solid #0fbcdb;
+		color:white;
+	}
+</style>
+
+<div class="row">
+  <div class="col-ms-12 big">
+</div>
+</div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+<div class="container-fluid">
+
+	<ul class="nav navbar-nav">
+	  <li class="active padd"><a href="{{ url_for('medicationlist')}}" class="btn btn-info btn-lg">
+	    <span class="glyphicon glyphicon-home"></span> Home</a></li>
+		</ul>
+
+<div class="navbar-header">
+  <a class="navbar-brand" href="{{ url_for('medicationlist')}}"> Medication Review App </a>
+</div>
+
+</ul>
+<a href="#">
+<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log In</button>
+</a>
+</div>
+</nav>
+<br>

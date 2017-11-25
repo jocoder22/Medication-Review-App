@@ -1,0 +1,20 @@
+
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
+<h1> Are you sure you want to delete {{medcat}}? </h1>
+
+<form action="{{ url_for('deleteCategory', medcat=medcat) }}" method="post">
+<input type='submit', value = 'Delete'>
+
+</form>
+
+<a href="{{ url_for('medicationlist')}}"> Cancel</a>
+<h2>{{'You are about to delete %s category Permanently!!!' %medcat}}</h3>
+
+
+<br><br><br>
+{% include "footer.html" %}
+{% endblock %}

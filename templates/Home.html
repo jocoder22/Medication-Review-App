@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
+<br><br>
+    <div class="row">
+      <div class="col-md-1"></div>
+      <section class="col-md-4">
+        <u><h1>{{ 'Medication Category' }}</h1></u>
+        {% for i in medicationclass %}
+        <div style="display: table;">
+          <ul style="font-size:20px; font-weight: bold;">
+            <a href='{{ url_for('medsCatList', medcat=i.category)}}'>
+            <li style="color:#2d2728">{{ i.category}}</li></a>
+          </ul>
+          {% endfor %}
+
+        </div>
+      </section>
+      <section class="col-md-6">
+        <fieldset>
+        <legend> <h1 class="text-center">{{'App information'}}</h1></legend>
+          <h3 class="text-center"><p style="background-color: white; width: 100%; border: 25px solid #2d2728;padding: 10px; margin: 0px;">{{'This medication catalog App is an application that provides a list of medication within a variety of Medication categories. The App has user registration and authentication system that allows registered users to post, edit and delete their own medication lists.'}}
+          </p></h3>
+        </fieldset>
+
+      </section>
+      <!-- <section class="col-md-1"></section> -->
+    </div>
+
+    <div class="col-md-1"></div>
+<br><br><br>
+{% include "footer.html" %}
+{% endblock %}

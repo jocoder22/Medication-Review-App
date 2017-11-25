@@ -1,0 +1,58 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<style>
+.vl {
+    border-left: 6px solid green;
+    height: 500px;
+    position: absolute;
+    left: 50%;
+    margin-left: -3px;
+    top: 0;
+}
+.round {
+    border: 2px solid;
+    border-radius: 5px;
+    padding: 20px;
+  }
+
+  .button1 {
+    background-color:black;
+    padding: 16px;
+    font-size: 20px;
+    border: 2px solid #0fbcdb;
+    color:white
+  }
+
+  .button2 {
+    margin-left: 200px;
+  }
+
+  .warn {
+    color: red;
+  }
+</style>
+
+<div class="row">
+<div class="col-md-offset-2 col-md-8">
+<h1 class="warn"> {{ 'Delete %s Category? Are you Sure!!' % medcat}}</h1>
+<form class="form container-fluid round" action='{{ url_for('deleteCategory', medcat=medcat) }}' method="post">
+
+  <button type="submit" id="submit" value="Delete"class="btn btn-info button1"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
+  </form>
+  <br><br>
+    <div>
+      <h1> {{'Delete %s Category' % medcat}}</h1>
+      {{'deleting %s category.... click the delete button' % medcat}}
+    </div>
+  <br>
+<a href="{{ url_for('medicationlist')}}" role="button" class="btn btn-danger button1" id="cancel"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</a>
+<h2 class="warn">{{'You are about to delete %s category Permanently!!!' % medcat}}</h3>
+
+</div>
+</div>
+
+<br><br><br>
+{% include "footer.html" %}
+{% endblock %}

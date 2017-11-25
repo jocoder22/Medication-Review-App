@@ -1,0 +1,77 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
+
+<div class="row">
+  <div class="col-md-offset-1 col-md-10 text-center bg-success">
+    <!--MESSAGE FLASHING EXAMPLE -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <h1>{{ message }}</h1>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>
+
+<br>
+
+
+
+{% include "loginUserCat.html" %}
+
+    <div class="row">
+      <div class="col-md-1"></div>
+      <section class="col-md-4">
+        <u><h1>{{ 'Medication Category' }}</h1></u>
+
+
+      <!--  <a href='{{ url_for('medsCatList', medcat=medicationlist.category)}}'>
+        <li style="color:#2d2728"><u><h1>{{ 'Medication Category' }}</h1></u></li></a>-->
+
+
+        {% for i in medicationlist %}
+        <div style="display: table;">
+          <ul style="font-size:20px; font-weight: bold;">
+            <a href='{{ url_for('medsCatList', medcat=i.category)}}'>
+            <li style="color:#2d2728">{{ i.category}}</li></a>
+          </ul>
+          {% endfor %}
+
+        </div>
+      </section>
+      <section class="col-md-6">
+        <fieldset>
+        <legend> <h1 class="text-center">{{'Category : %s' % categoryM.category}}</h1></legend>
+        <div style="font-size:20px; font-weight: bold; display: table; margin: 0 auto; background-color: white; width: 100%; border: 25px solid #2d2728;padding: 25px; margin: 0px;">
+            {% for i in medsdisplay %}
+            <p class="text-center" >
+              <a href='{{ url_for('medList',medcat=categoryM.category, med=i.name)}}' style="color:#2d2728">{{ i.name}}</a>
+            </p>
+            {% endfor %}
+
+
+          <p class="text-center" >
+            <a  href="{{url_for('createMedication',medcat=categoryM.category)}}">
+              <button class="btn btn-default btn-lg" style="background-color:#07080c;padding: 16px;font-size: 20px;border: 2px solid #0fbcdb;color:white">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add new Medication
+              </button>
+            </a>
+
+            </p>
+
+          </div>
+
+        </fieldset>
+
+      </section>
+      <!-- <section class="col-md-1"></section> -->
+    </div>
+
+    <div class="col-md-1"></div>
+<br><br><br><br>
+{% include "footer.html" %}
+{% endblock %}

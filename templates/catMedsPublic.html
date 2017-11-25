@@ -1,0 +1,48 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<style media="screen">
+  .gib2 {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    background-image: linear-gradient(to bottom, black 0%, white 100%);
+    background-blend-mode: luminosity;
+  }
+
+</style>
+<br><br>
+    <div class="row">
+      <div class="col-md-2"></div>
+      <section class="col-md-3">
+      <br>
+
+  <p ><a href="{{ url_for('medsCatList', medcat=caMed.category)}}" style="color:black;"><span class="glyphicon glyphicon-step-backward"></span><u >Medication Category List</u></a></p>
+
+
+
+        <u><h1>{{ caMed.category }}</h1></u>
+        {% for i in categoryM %}
+        <div style="display: table;">
+          <ul style="font-size:20px; font-weight: bold;">
+            <a href='{{ url_for('medList', medcat=caMed.category,med=i.name)}}'>
+            <li style="color:#2d2728">{{ i.name}}</li></a>
+          </ul>
+          {% endfor %}
+
+        </div>
+      </section>
+      <section class="col-md-6">
+        <h1 class="text-center gib2" style="color:white">{{ medsdisplay.name}}</h1>
+            <h4><strong>Description : </strong>{{ medsdisplay.description}}</h4>
+            <h4><strong>Adverse Effects : </strong>{{ medsdisplay.adverseEffect}}</h4>
+            <h4><strong>FDA Pregnancy Category : </strong>{{ medsdisplay.pregnancyCategory}}</h4>
+
+      </section>
+      <div class="col-md-1"></div>
+      <!-- <section class="col-md-1"></section> -->
+    </div>
+
+{% include "footer.html" %}
+{% endblock %}
