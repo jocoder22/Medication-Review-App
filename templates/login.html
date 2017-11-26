@@ -25,12 +25,11 @@
       <div id="signinButton">
         <span class="g-signin"
           data-scope="openid email"
-          data-clientid="YOUR_CLIENT_ID_GOES_HERE.apps.googleusercontent.com"
+          data-clientid="658869574432-3an0hbh5vnm2s82mp1jbj3pa46t5nn12.apps.googleusercontent.com"
           data-redirecturi="postmessage"
           data-accesstype="offline"
           data-cookiepolicy="single_host_origin"
-          data-callback="signInCallback"
-          data-approvalprompt="force">
+          data-callback="signInCallback">
         </span>
       </div>
 
@@ -39,7 +38,7 @@
   </div>
 
       <div id="result"></div>
-
+<!-- data-approvalprompt="force">-->
   <script>
    function signInCallback(authResult) {
      if (authResult['code']) {
