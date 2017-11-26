@@ -1,7 +1,7 @@
 # this is the project file
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from sqlalchemy import create_engine, and_ , or_
+from sqlalchemy import create_engine, and_ , or_, asc
 from sqlalchemy.orm import sessionmaker
 from data_setup import MedCategory, Base, MedList
 
@@ -160,8 +160,8 @@ def gdisconnect():
         return response
 
 def queryData():
-    allCategory = session.query(MedCategory).all()
-    allCatergoryMeds = session.query(MedList).all()
+    allCategory = session.query(MedCategory).order_by(asc(MedCategory.category))
+    allCatergoryMeds = session.query(MedList).order_by(asc(MedList.name))
     return allCategory, allCatergoryMeds
 
 
@@ -191,7 +191,7 @@ def allCategoryJSON():
 @app.route('/medication/<string:medcat>/JSON')
 def categoryMedsJSON(medcat):
     medcategory = session.query(MedCategory).filter_by(category=medcat).one()
-    medss = session.query(MedList).filter_by(medcategory_id=medcategory.id).all()
+    medss = session.query(MedList).order_by(asc(MedList.name)).filter_by(medcategory_id=medcategory.id).all()
     return jsonify(medictions=[i.serialize for i in medss], message="Medication list created successfully", Message='This is the list for %s medications' % medcat)
 
 # Create a JSON file of the a particular medication.
@@ -213,16 +213,17 @@ def oneMedicationJSON(category, med):
 @app.route('/')
 @app.route('/medication/')
 def medicationlist():
-    medicationclass = session.query(MedCategory).all()
+    ##medicationclass = session.query(MedCategory).all()
+    medicationclass = session.query(MedCategory).order_by(asc(MedCategory.category))
     return render_template('Home.html', medicationclass=medicationclass)
 
 
 
 @app.route('/medication/<string:medcat>/')
 def medsCatList(medcat):
-    medicationlist = session.query(MedCategory).all()
+    medicationlist = session.query(MedCategory).order_by(asc(MedCategory.category))
     categoryM = session.query(MedCategory).filter_by(category=medcat).first()
-    medsdisplay = session.query(MedList).filter_by(medcategory_id=categoryM.id).all()
+    medsdisplay = session.query(MedList).filter_by(medcategory_id=categoryM.id).order_by(asc(MedList.name)).all()
     return render_template('category.html', categoryM=categoryM, medsdisplay=medsdisplay, medicationlist=medicationlist)
     ##return render_template('categoryPublic.html', categoryM=categoryM, medsdisplay=medsdisplay, medicationlist=medicationlist)
 
@@ -230,7 +231,7 @@ def medsCatList(medcat):
 @app.route('/medication/<string:medcat>/<string:med>/')
 def medList(medcat, med):
     caMed = session.query(MedCategory).filter_by(category=medcat).one()
-    categoryM = session.query(MedList).filter_by(medcategory_id=caMed.id).all()
+    categoryM = session.query(MedList).order_by(asc(MedList.name)).filter_by(medcategory_id=caMed.id).all()
     medsdisplay = session.query(MedList).filter_by(name=med).one()
     return render_template('catMeds.html', categoryM=categoryM, medsdisplay=medsdisplay, caMed=caMed)
     ##return render_template('catMedsPublic.html', categoryM=categoryM, medsdisplay=medsdisplay, caMed=caMed)
