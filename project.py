@@ -10,11 +10,25 @@ app = Flask(__name__)
 # app.config['JSON_SORT_KEYS'] = False
 
 
-#Imports for session token
+#Imports for generate and store session token
 from flask import session as login_session
 import random, string
 
 
+#Imports to handle result sent by signInCallback function on the login.html
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+
+CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = "Restaurant Menu Application"
+
+# connect to the database and create database session
 engine = create_engine('sqlite:///medication.db')
 Base.metadata.bind = engine
 
