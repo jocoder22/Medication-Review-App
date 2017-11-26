@@ -39,7 +39,7 @@ class MedList(Base):
     @property
     def serialize(self):
         return {
-            'Medcation Id': self.id,
+            'Medication Id': self.id,
             'Medication Name': self.name,
             'Description': self.description,
             'Pregnancy Category': self.pregnancyCategory,
