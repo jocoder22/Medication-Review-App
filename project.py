@@ -6,13 +6,28 @@ from sqlalchemy.orm import sessionmaker
 from data_setup import MedCategory, Base, MedList
 
 app = Flask(__name__)
+
 # app.config['JSON_SORT_KEYS'] = False
+
+
+#Imports for session token
+from flask import session as login_session
+import random, string
+
 
 engine = create_engine('sqlite:///medication.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+#Create state session to prevent forgery login_session
+@app.route("/login")
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return 'The current session state is %s' % login_session['state']
+
 
 
 def queryData():
