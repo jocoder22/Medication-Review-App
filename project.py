@@ -26,7 +26,8 @@ session = DBSession()
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    return 'The current session state is %s' % login_session['state']
+    #return 'The current session state is %s' % login_session['state']
+    return render_template('login.html', STATE=state)
 
 
 
@@ -65,11 +66,11 @@ def allCategoryJSON():
     return jsonify(Category=[i.serialize for i in a], message="Medication list created successfully")
 
 # Create a JSON file of the all medications within a category.
-@app.route('/medication/<string:meds>/JSON')
+@app.route('/medication/<string:medcat>/JSON')
 def categoryMedsJSON(medcat):
     medcategory = session.query(MedCategory).filter_by(category=medcat).one()
     medss = session.query(MedList).filter_by(medcategory_id=medcategory.id).all()
-    return jsonify(medictions=[i.serialize for i in medss], message="Medication list created successfully", Message='This is the list for %s medications' % meds)
+    return jsonify(medictions=[i.serialize for i in medss], message="Medication list created successfully", Message='This is the list for %s medications' % medcat)
 
 # Create a JSON file of the a particular medication.
 @app.route('/medication/<string:category>/<string:meds>/JSON')
