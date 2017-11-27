@@ -56,10 +56,22 @@ def delete_entry(query):
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    #return 'The current session state is %s' % login_session['state']
+    #return 'The current session state is %s' % login_session['user_id']
     return render_template('login.html', STATE=state)
 
 
+@app.route("/loginstate")
+def showLoginState():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return 'The current session state is %s' % login_session['state']
+    #return render_template('login.html', STATE=state)
+
+@app.route('/gdisconnect2')
+def gdisconnect2():
+    #login_session.clear()
+    return 'clear login_session %s' % login_session['state']
+    #return jsonify(medication=[login_session.serialize], message="Medication list created successfully")
 
 # connect the user and initial the OAuth process
 @app.route('/gconnect', methods=['POST'])
@@ -129,6 +141,13 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # see if user exists, if it doesn't make a new one
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -140,26 +159,8 @@ def gconnect():
     print "done!"
     return output
 
-@app.route('/gdisconnect2')
-def gdisconnect2():
-    access_token = login_session.get('access_token')
-    if access_token is None:
-        print 'Access Token is None'
-        response = make_response(json.dumps('Current user not connected.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[0]
-    if result['status'] == '400':
-        del login_session['access_token']
-        del login_session['gplus_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
 
-    # DISCONNECT - Revoke a current user's token and reset their login_session
-
+# DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -296,9 +297,11 @@ def medList(medcat, med):
 def newCategory():
     if 'username' not in login_session:
         return redirect('/login')
+    user1 = getUserInfo()
+    user1 = session.query(User).filter_by(name=login_session['username']).first()
     if request.method == 'POST':
         if request.form['category']:
-            category1 = MedCategory(category=request.form['category'], user_id=login_session['user_id'])
+            category1 = MedCategory(category=request.form['category'], user=user1)
             add_entry(category1)
             flash("%s category created!" % request.form['category'])
             return redirect(url_for('medsCatList',medcat=request.form['category']))
