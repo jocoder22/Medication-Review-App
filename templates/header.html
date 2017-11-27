@@ -20,10 +20,9 @@
 		color:white;
 	}
 </style>
-
 <div class="row">
-  <div class="col-ms-12 big">
-</div>
+	<div class="col-md-12 big">
+	</div>
 </div>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -34,14 +33,48 @@
 	    <span class="glyphicon glyphicon-home"></span> Home</a></li>
 		</ul>
 
+
 <div class="navbar-header">
   <a class="navbar-brand" href="{{ url_for('medicationlist')}}"> Medication Review App </a>
 </div>
 
-</ul>
-<a href="#">
+<a href="">
+<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log out</button>
+</a>
+
+
+<a href="{{ url_for('showLogin')}}">
+		<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log In</button>
+		</a>
+<!--</ul>
+<ul>
+{% if 'username' not in login_session %}
+<a href="">
 <button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log In</button>
 </a>
+{% else %}
+<a href="">
+<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-out"> </span> Log Out</button>
+
+<a href="">
+<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-out"> </span> Log Out</button>
+</a>
+
+{% endif %} -->
+<br><br>
 </div>
 </nav>
+
+<div class="row">
+  <div class="col-md-offset-1 col-md-10 text-center bg-success">
+    <!--MESSAGE FLASHING EXAMPLE -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <h1>{{ message }}</h1>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+</div>
 <br>

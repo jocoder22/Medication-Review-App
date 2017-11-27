@@ -3,7 +3,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import create_engine, and_ , or_, asc
 from sqlalchemy.orm import sessionmaker
-from data_setup import MedCategory, Base, MedList
+from database_setup import MedCategory, Base, MedList, User
 
 app = Flask(__name__)
 
@@ -35,6 +35,22 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
+def queryData():
+    allCategory = session.query(MedCategory).order_by(asc(MedCategory.category))
+    allCatergoryMeds = session.query(MedList).order_by(asc(MedList.name))
+    return allCategory, allCatergoryMeds
+
+
+def add_entry(query):
+    session.add(query)
+    session.commit()
+
+
+def delete_entry(query):
+    session.delete(query)
+    session.commit()
+
 #Create state session to prevent forgery login_session
 @app.route("/login")
 def showLogin():
@@ -42,6 +58,7 @@ def showLogin():
     login_session['state'] = state
     #return 'The current session state is %s' % login_session['state']
     return render_template('login.html', STATE=state)
+
 
 
 # connect the user and initial the OAuth process
@@ -61,15 +78,13 @@ def gconnect():
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
-        response = make_response(
-            json.dumps('Failed to upgrade the authorization code.'), 401)
+        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
-           % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
@@ -81,15 +96,13 @@ def gconnect():
     # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
-        response = make_response(
-            json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
-        response = make_response(
-            json.dumps("Token's client ID does not match app's."), 401)
+        response = make_response(json.dumps("Token's client ID does not match app's."), 401)
         print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -127,8 +140,26 @@ def gconnect():
     print "done!"
     return output
 
+@app.route('/gdisconnect2')
+def gdisconnect2():
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        print 'Access Token is None'
+        response = make_response(json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    if result['status'] == '400':
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
 
- # DISCONNECT - Revoke a current user's token and reset their login_session
+    # DISCONNECT - Revoke a current user's token and reset their login_session
+
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -159,20 +190,33 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-def queryData():
-    allCategory = session.query(MedCategory).order_by(asc(MedCategory.category))
-    allCatergoryMeds = session.query(MedList).order_by(asc(MedList.name))
-    return allCategory, allCatergoryMeds
+
+# User Helper Functions
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+    add_entry(newUser)
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
 
 
-def add_entry(query):
-    session.add(query)
-    session.commit()
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
 
 
-def delete_entry(query):
-    session.delete(query)
-    session.commit()
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
+
+
+@app.route('/users/JSON')
+def showUserJSON():
+    users = session.query(User).order_by(asc(User.name))
+    return jsonify(allUsers=[i.serialize for i in users], message="All users list created successfully")
 
 
 # Create a JSON file of all medication on the database.
@@ -224,8 +268,10 @@ def medsCatList(medcat):
     medicationlist = session.query(MedCategory).order_by(asc(MedCategory.category))
     categoryM = session.query(MedCategory).filter_by(category=medcat).first()
     medsdisplay = session.query(MedList).filter_by(medcategory_id=categoryM.id).order_by(asc(MedList.name)).all()
-    return render_template('category.html', categoryM=categoryM, medsdisplay=medsdisplay, medicationlist=medicationlist)
-    ##return render_template('categoryPublic.html', categoryM=categoryM, medsdisplay=medsdisplay, medicationlist=medicationlist)
+    if 'username' in login_session:
+        return render_template('category.html', categoryM=categoryM, medsdisplay=medsdisplay, medicationlist=medicationlist)
+    else:
+        return render_template('categoryPublic.html', categoryM=categoryM, medsdisplay=medsdisplay, medicationlist=medicationlist)
 
 
 @app.route('/medication/<string:medcat>/<string:med>/')
@@ -233,8 +279,10 @@ def medList(medcat, med):
     caMed = session.query(MedCategory).filter_by(category=medcat).one()
     categoryM = session.query(MedList).order_by(asc(MedList.name)).filter_by(medcategory_id=caMed.id).all()
     medsdisplay = session.query(MedList).filter_by(name=med).one()
-    return render_template('catMeds.html', categoryM=categoryM, medsdisplay=medsdisplay, caMed=caMed)
-    ##return render_template('catMedsPublic.html', categoryM=categoryM, medsdisplay=medsdisplay, caMed=caMed)
+    if 'username' in login_session:
+        return render_template('catMeds.html', categoryM=categoryM, medsdisplay=medsdisplay, caMed=caMed)
+    else:
+        return render_template('catMedsPublic.html', categoryM=categoryM, medsdisplay=medsdisplay, caMed=caMed)
 
 
 
@@ -246,9 +294,11 @@ def medList(medcat, med):
 # Creating, editing and deleting medication category
 @app.route('/medication/new/', methods=['GET', 'POST'])
 def newCategory():
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         if request.form['category']:
-            category1 = MedCategory(category=request.form['category'])
+            category1 = MedCategory(category=request.form['category'], user_id=login_session['user_id'])
             add_entry(category1)
             flash("%s category created!" % request.form['category'])
             return redirect(url_for('medsCatList',medcat=request.form['category']))
@@ -262,6 +312,8 @@ def newCategory():
 
 @app.route('/medication/<string:medcat>/Edit/', methods=['GET', 'POST'])
 def editCategory(medcat):
+    if 'username' not in login_session:
+        return redirect('/login')
     catToEdit = session.query(MedCategory).filter_by(category=medcat).first()
     if request.method == 'POST':
         if request.form['category']:
@@ -279,13 +331,16 @@ def editCategory(medcat):
 
 @app.route('/medication/<string:medcat>/Delete/', methods=['GET', 'POST'])
 def deleteCategory(medcat):
+    if 'username' not in login_session:
+        return redirect('/login')
     catTodel = session.query(MedCategory).filter_by(category=medcat).first()
-    catTodel2 = session.query(MedCategory).filter_by(id='1').first()
+    #catTodel2 = session.query(MedCategory).filter_by(id='1').first()
     name = catTodel.category
     if request.method == 'POST':
         delete_entry(catTodel)
         flash("%s deleted from category!" % name)
         ##return redirect(url_for('medicationlist'))
+        catTodel2 = session.query(MedCategory).order_by(asc(MedCategory.category)).first()
         return redirect(url_for('medsCatList',medcat=catTodel2.category))
 
     else:
@@ -300,15 +355,14 @@ def deleteCategory(medcat):
 
 
 # creating, editing and deleting medication
-
-
-
 @app.route('/medication/<string:medcat>/New/', methods=['GET', 'POST'])
 def createMedication(medcat):
+    if 'username' not in login_session:
+            return redirect('/login')
     caMed = session.query(MedCategory).filter_by(category=medcat).one()
     if request.method == 'POST':
         if request.form['name']:
-            newMed= MedList(name = request.form['name'], description = request.form['description'], adverseEffect = request.form['adverseEffect'], pregnancyCategory = request.form['pregnancyCategory'], medcategory_id=caMed.id)
+            newMed= MedList(name = request.form['name'], description = request.form['description'], adverseEffect = request.form['adverseEffect'], pregnancyCategory = request.form['pregnancyCategory'], medcategory_id=caMed.id, user_id=caMed.user_id)
             add_entry(newMed)
         #flash('New Medication added successfully!!')
             flash("%s created in %s category!" % (request.form['name'], medcat))
@@ -324,6 +378,8 @@ def createMedication(medcat):
 
 @app.route('/medication/<string:medcat>/<string:med>/Edit', methods=['GET', 'POST'])
 def editMedication(medcat, med):
+    if 'username' not in login_session:
+        return redirect('/login')
     medToEdit = session.query(MedList).filter_by(name=med).one()
     editcat = session.query(MedCategory).filter_by(category=medcat).one()
     if request.method == 'POST':
@@ -345,14 +401,15 @@ def editMedication(medcat, med):
 
 @app.route('/medication/<string:medcat>/<string:med>/Delete/', methods=['GET', 'POST'])
 def deleteMedication(medcat, med):
+    if 'username' not in login_session:
+        return redirect('/login')
     medTodel = session.query(MedList).filter_by(name=med).first()
-    medTodel2 = session.query(MedList).filter_by(id='1').first()
     deletecat = session.query(MedCategory).filter_by(category=medcat).one()
 
     if request.method == 'POST':
         delete_entry(medTodel)
         flash("%s deleted from %s category!" % (med, medcat))
-        #return redirect(url_for('medicationlist',medcat=deletecat.category))
+        medTodel2 = session.query(MedList).filter_by(medcategory_id= deletecat.id).order_by(asc(MedList.name)).first()
         return redirect(url_for('medList', medcat=deletecat.category, med=medTodel2.name))
 
     else:
