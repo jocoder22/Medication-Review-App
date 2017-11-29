@@ -435,10 +435,17 @@ def editMedication(medcat, med):
             flash("%s updated in %s category!" % (request.form['name'], medcat))
             return redirect(url_for('medList', medcat=editcat.category, med=medToEdit.name))
         else:
-            return render_template('editMedication.html',medcat=medcat,med=med, medToEdit=medToEdit, editcat=editcat)
+            return render_template('editMedication.html',
+                                   medcat=medcat,med=med, 
+                                   medToEdit=medToEdit, 
+                                   editcat=editcat)
 
     else:
-        return render_template('editMedication.html',medcat=medcat,med=med, medToEdit=medToEdit, editcat=editcat)
+        return render_template('editMedication.html',
+                               medcat=medcat,
+                               med=med, 
+                               medToEdit=medToEdit, 
+                               editcat=editcat)
 
 
 @app.route('/medication/<string:medcat>/<string:med>/Delete/', methods=['GET', 'POST'])
@@ -461,7 +468,11 @@ def deleteMedication(medcat, med):
         return redirect(url_for('medList', medcat=deletecat.category, med=medTodel2.name))
 
     else:
-        return render_template('deleteMedication.html',medcat=medcat, med=med, deletecat=deletecat, medTodel=medTodel)
+        return render_template('deleteMedication.html',
+                               medcat=medcat, 
+                               med=med, 
+                               deletecat=deletecat, 
+                               medTodel=medTodel)
 
 
  Disconnect based on provider
