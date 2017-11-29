@@ -1,28 +1,28 @@
 # this is the project file
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import (Flask, 
+                   render_template, 
+                   request, 
+                   redirect, 
+                   url_for, 
+                   flash, 
+                   jsonify,
+                   make_response,
+                   session as login_session)
+
 from sqlalchemy import create_engine, and_ , or_, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import MedCategory, Base, MedList, User
-
-app = Flask(__name__)
-
-# app.config['JSON_SORT_KEYS'] = False
-
-
-#Imports for generate and store session token
-from flask import session as login_session
-import random, string
 
 
 #Imports to handle result sent by signInCallback function on the login.html
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
-import json
-from flask import make_response
+import json, random, string
 import requests
 
+app = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
@@ -67,11 +67,7 @@ def showLoginState():
     return 'The current session state is %s' % login_session['state']
     #return render_template('login.html', STATE=state)
 
-@app.route('/gdisconnect2')
-def gdisconnect2():
-    #login_session.clear()
-    return 'clear login_session %s' % login_session['state']
-    #return jsonify(medication=[login_session.serialize], message="Medication list created successfully")
+
 
 # connect the user and initial the OAuth process
 @app.route('/gconnect', methods=['POST'])
