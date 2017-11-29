@@ -144,8 +144,9 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;
-    -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;' \
+              '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+ 
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -232,25 +233,30 @@ def allCategoryJSON():
 @app.route('/medication/<string:medcat>/JSON')
 def categoryMedsJSON(medcat):
     medcategory = session.query(MedCategory).filter_by(category=medcat).one()
-    medss = session.query(MedList).order_by(asc(MedList.name)).filter_by(medcategory_id=medcategory.id).all()
+    medss = session.query(MedList)\
+        .order_by(asc(MedList.name))\
+        .filter_by(medcategory_id=medcategory.id).all()
     return jsonify(medictions=[i.serialize for i in medss], 
                    message="Medication list created successfully", 
                    Message='This is the list for %s medications' % medcat)
 
 # Create a JSON file of the a particular medication.
-@app.route('/medication/<string:category>/<string:meds>/JSON')
+@app.route('/medication/<string:category>/<string:med>/JSON')
 def oneMedicationJSON(category, med):
     try:
-        medication = session.query(MedCategory).filter_by(category=category).one()
-        onemedication = session.query(MedList).filter_by(name=med, medcategory_id=medication.id).one()
+        medication = session.query(MedCategory)\
+                .filter_by(category=category).one()
+        onemedication = session.query(MedList)\
+                     .filter_by(name=med, medcategory_id=medication.id).one()
         return jsonify(medication=[onemedication.serialize], 
                        message="Medication list created successfully", 
-                       Message='This is for %s' % meds)
+                       Message='This is for %s' % med)
     except:
-      return jsonify(message="Please ensure that your are searching in the right\n
-               medication category and the medication exist in the database",
-               Message=" .... Sorry we can't find your medication in our\n
-               database under the %s category" % category)
+      return jsonify(message="Please ensure that your are searching"
+                             "in the right medication category and "
+                             "the medication exist in the database",
+                     Message=" .... Sorry we can't find your medication in our"
+                             "database under the %s category" % category)
 
         
 
@@ -271,7 +277,8 @@ def medicationlist():
 def medsCatList(medcat):
     medicationlist = session.query(MedCategory).order_by(asc(MedCategory.category))
     categoryM = session.query(MedCategory).filter_by(category=medcat).first()
-    medsdisplay = session.query(MedList).filter_by(medcategory_id=categoryM.id).order_by(asc(MedList.name)).all()
+    medsdisplay = session.query(MedList).filter_by(medcategory_id=categoryM.id)\
+              .order_by(asc(MedList.name)).all()
     if 'username' in login_session:
         return render_template('category.html', categoryM=categoryM, 
                                medsdisplay=medsdisplay, 
@@ -286,7 +293,8 @@ def medsCatList(medcat):
 @app.route('/medication/<string:medcat>/<string:med>/')
 def medList(medcat, med):
     caMed = session.query(MedCategory).filter_by(category=medcat).one()
-    categoryM = session.query(MedList).order_by(asc(MedList.name)).filter_by(medcategory_id=caMed.id).all()
+    categoryM = session.query(MedList).order_by(asc(MedList.name))\
+            .filter_by(medcategory_id=caMed.id).all()
     medsdisplay = session.query(MedList).filter_by(name=med).one()
     if 'username' in login_session:
         return render_template('catMeds.html', 
@@ -323,18 +331,18 @@ def newCategory():
         return render_template('newCategory.html')
 
 
-
-
+        
+        
 @app.route('/medication/<string:medcat>/Edit/', methods=['GET', 'POST'])
 def editCategory(medcat):
     if 'username' not in login_session:
         return redirect('/login')
-    catToEdit = session.query(MedCategory).filter_by(category=medcat).first() 
+    catToEdit = session.query(MedCategory).filter_by(category=medcat).first()
     if catToEdit.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to 
-        edit this medication category. Please create your own category in order 
-        to edit.');}</script><body onload='myFunction()'>"
-        
+        return "<script>function myFunction() {alert('You are not authorized" \
+                "to edit this medication category. Please create your own" \
+                "category in order to edit.');}</script>" \
+                "<body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['category']:
             catToEdit.category = request.form['category']
@@ -359,15 +367,17 @@ def deleteCategory(medcat):
         return redirect('/login')
     catTodel = session.query(MedCategory).filter_by(category=medcat).first()
     if catTodel.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to 
-        delete this medication category. Please create your own category in order 
-        to delete.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized" \
+               "to delete this medication category. Please create your own" \
+               "category in order to edit.');}</script>" \
+               "<body onload='myFunction()'>"
     
     name = catTodel.category
     if request.method == 'POST':
         delete_entry(catTodel)
         flash("%s deleted from category!" % name)
-        catTodel2 = session.query(MedCategory).order_by(asc(MedCategory.category)).first()
+        catTodel2 = session.query(MedCategory)
+                .order_by(asc(MedCategory.category)).first()
         return redirect(url_for('medsCatList',medcat=catTodel2.category))
 
     else:
@@ -420,10 +430,10 @@ def editMedication(medcat, med):
     medToEdit = session.query(MedList).filter_by(name=med).one()
     editcat = session.query(MedCategory).filter_by(category=medcat).one()
     if medToEdit.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to 
-        edit any medication this medication category. Please create your own 
-        category in order to edit any medication in the category.');}</script>
-        <body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized to" \
+               "edit any medication this medication category. Please create your" \
+               "own category in order to edit any medication in the category.');}" \
+               "</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             medToEdit.name = request.form['name']
@@ -456,15 +466,16 @@ def deleteMedication(medcat, med):
     deletecat = session.query(MedCategory).filter_by(category=medcat).one()
     
     if medTodel.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to 
-        delete any medication this medication category. Please create your own 
-        category in order to delete any medication in the category.');}</script>
-        <body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized" \
+               "to delete any medication this medication category. Please create" \
+               "your own category in order to delete any medication in the" \
+               "category.');}</script><body onload='myFunction()'>"
 
     if request.method == 'POST':
         delete_entry(medTodel)
         flash("%s deleted from %s category!" % (med, medcat))
-        medTodel2 = session.query(MedList).filter_by(medcategory_id= deletecat.id).order_by(asc(MedList.name)).first()
+        medTodel2 = session.query(MedList).filter_by(medcategory_id= deletecat.id)\
+                .order_by(asc(MedList.name)).first()
         return redirect(url_for('medList', medcat=deletecat.category, med=medTodel2.name))
 
     else:
