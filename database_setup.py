@@ -31,6 +31,7 @@ class MedCategory(Base):
     id = Column(Integer, primary_key=True)
     category = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
+    medlist = relationship('MedList', cascade='all, delete-orphan')
     user = relationship(User)
 
 
