@@ -37,31 +37,19 @@
 <div class="navbar-header">
   <a class="navbar-brand" href="{{ url_for('medicationlist')}}"> Medication Review App </a>
 </div>
-
-<a href="">
-<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log out</button>
-</a>
-
-
+	
+<div>
+	{% if 'username' not in login_session %}
 <a href="{{ url_for('showLogin')}}">
-		<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log In</button>
-		</a>
-<!--</ul>
-<ul>
-{% if 'username' not in login_session %}
-<a href="">
-<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log In</button>
+<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-in"> </span> Log In </button>
 </a>
+
 {% else %}
-<a href="">
-<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-out"> </span> Log Out</button>
-
-<a href="">
-<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-out"> </span> Log Out</button>
-</a>
-
-{% endif %} -->
-<br><br>
+<a href="{{ url_for('disconnect')}}">
+		<button class="btn navbar-btn navbar-right bbn padd"><span class="glyphicon glyphicon-log-out"> </span> Log Out </button>
+		</a>
+	{% endif %}
+	</div>
 </div>
 </nav>
 
