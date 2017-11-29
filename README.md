@@ -25,7 +25,7 @@ The app has a `Sqlalchemy` based database consisting of the following tables:
   - FDA Pregnancy Category
   - Adverse Effect
    
-   These three tables are related to each other through a `Relationship` links using `ForeignKey`
+These three tables are related to each other through a `Relationship` links using `ForeignKey`
    
-   ### JSON endpoint
-   The app also provide `JSON`endpoints for user, medication categories and medications listed on the database.
+### JSON endpoint
+The app also provide `JSON`endpoints for user, medication categories and medications listed on the database.
