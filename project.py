@@ -398,10 +398,10 @@ def createMedication(medcat):
             return redirect('/login')
     caMed = session.query(MedCategory).filter_by(category=medcat).one()
     if caMed.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to 
-        add new medication this medication category. Please create your own 
-        category in order to add new medication to the category.');}</script>
-        <body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized" \
+               "to add new medication this medication category. Please create" \
+               "your own category in order to add new medication to the" \
+               "category.');}</script><body onload='myFunction()'>"
     
     if request.method == 'POST':
         if request.form['name']:
