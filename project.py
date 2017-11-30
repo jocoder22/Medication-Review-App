@@ -272,6 +272,11 @@ def medicationlist():
     return render_template('Home.html', medicationclass=medicationclass)
 
 
+@app.route('/medication/cancel/new')
+def cancelDeletion():
+    candel = session.query(MedCategory).order_by(asc(MedCategory.category)).first()
+    return redirect(url_for('medsCatList',medcat=candel.category))
+  
 
 @app.route('/medication/<string:medcat>/')
 def medsCatList(medcat):
