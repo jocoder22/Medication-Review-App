@@ -10,9 +10,9 @@ This is a `RESTful` web application implemented on Python framework Flask incorp
     - Flask
     - SQLAlchemy
 
-### Registered user
+    ### Registered user
 Registered users are logged in using either `Google` or `Facebook` API and can view all medication categories. Registered logged in users can create new medication categories and medication list under same category but can only edit or deleted medication categories and medications created by them from the list.
-### Unregistered
+    ### Unregistered
 Unregistered user not authenticated by either `Google` or `Facebook` cannot log in and can only view list medication categories and medication within the category. They cannot create new medication category and medication or delete or edit them. Unregistered user can register and log in using either `Google` or `Facebook` for 'OAuth` authentication and authorization system.
 ### App Backend
 The app has a `Sqlalchemy` based database consisting of the following tables:
