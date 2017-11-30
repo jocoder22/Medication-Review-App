@@ -1,7 +1,15 @@
 # Medication Review App
-This is a web application that list medication categories and medications within each category. For each medication, the app display information about the name, brief description, adverse effects and FDA pregnancy category of the medication. This information will be presented to public for guidance on medication use.
+## Introduction
+This is a web application that list medication categories and medications within each category. For each medication, the app display information about the name, brief description, adverse effects and FDA pregnancy category of the medication. This information will be presented to public for guidance on medication use. 
+
 ## App Implementation
 This is a `RESTful` web application implemented on Python framework Flask incorporating `Google` and `Facebook` third party `OAuth authentication`. Registered users can view, edit and delete medication categories and medications created by them while unregistered user can only view the medication categories and medication within each category.
+
+* **Required Libraries and dependencies** 
+  - Python 2.7 
+    - Flask
+    - SQLAlchemy
+
 ### Registered user
 Registered users are logged in using either `Google` or `Facebook` API and can view all medication categories. Registered logged in users can create new medication categories and medication list under same category but can only edit or deleted medication categories and medications created by them from the list.
 ### Unregistered
@@ -29,3 +37,12 @@ These three tables are related to each other through a `Relationship` links usin
    
 ### JSON endpoint
 The app also provide `JSON`endpoints for user, medication categories and medications listed on the database.
+
+## Installation
+* **Google OAuth2** 
+   - Visit [google developer page](https://console.developers.google.com/apis) and create OAuth client ID and client secret that will enable communication with google API libraries and the web application. The `project.py` and `login.html` implements the login and callback function for google OAuth2 authenticationa and authorization process. [Google documentation](https://developers.google.com/identity/protocols/OAuth2) for more information
+ * **Operating Instruction**
+    - From the server lauch the app by running python `project.py`
+    - On the web browser run `localhost:9080/login` 
+    - sign in with google email account
+
