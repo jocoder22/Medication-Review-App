@@ -1,5 +1,11 @@
 # this is the project file
 
+import httplib2
+import json
+import random
+import string
+import requests
+
 from flask import (Flask,
                    render_template,
                    request,
@@ -12,17 +18,12 @@ from flask import (Flask,
 
 from sqlalchemy import create_engine, and_, or_, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import MedCategory, Base, MedList, User
-
 
 # Imports to handle result sent by signInCallback function on the login.html
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
-import httplib2
-import json
-import random
-import string
-import requests
+
+from database_setup import MedCategory, Base, MedList, User
 
 app = Flask(__name__)
 
