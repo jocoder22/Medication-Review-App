@@ -1,4 +1,5 @@
-# this is the project file
+
+#!/usr/bin/python
 
 import httplib2
 import json
