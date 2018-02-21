@@ -42,7 +42,6 @@ The app also provide `JSON`endpoints for user, medication categories and medicat
 * **Google OAuth2** 
    - Visit [google developer page](https://console.developers.google.com/apis) and create OAuth client ID and client secret that will enable communication with google API libraries and the web application. The `project.py` and `login.html` implements the login and callback function for google OAuth2 authentication and authorization process. [Google documentation](https://developers.google.com/identity/protocols/OAuth2) for more information
  * **Operating Instruction**
-    - From the server launch the app by running python `project.py`
-    - On the web browser run `localhost:9080/login` 
+    - On the web browser run `www.jocoder22.com` 
     - sign in with google email account
 
