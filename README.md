@@ -36,7 +36,8 @@ The app has a `Sqlalchemy` based database consisting of the following tables:
 These three tables are related to each other through a `Relationship` links using `ForeignKey`
    
 ### JSON endpoint
-The app also provide `JSON`endpoints for user, medication categories and medications listed on the database.
+The app also provide `JSON`endpoints for medication categories and medications listed on the database.
+ - use 'htpp://www.jocoder22/medication/all/JSON'  to request JSON data of all medications.
 
 ## Installation
 * **Google OAuth2** 
