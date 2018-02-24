@@ -37,7 +37,8 @@ These three tables are related to each other through a `Relationship` links usin
    
 ### JSON endpoint
 The app also provide `JSON`endpoints for medication categories and medications listed on the database.
- - use htpp://www.jocoder22.com/medication/all/JSON  to request JSON data of all medications.
+ - use http://www.jocoder22.com/medication/all/JSON  to request JSON data of all medications.
+ - use http://www/jocoder22.com/medication/category/JSON to request JSON data of medication category
 
 ## Installation
 * **Google OAuth2** 
