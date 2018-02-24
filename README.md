@@ -37,12 +37,12 @@ These three tables are related to each other through a `Relationship` links usin
    
 ### JSON endpoint
 The app also provide `JSON`endpoints for medication categories and medications listed on the database.
- - use 'htpp://www.jocoder22/medication/all/JSON'  to request JSON data of all medications.
+ - use htpp://www.jocoder22.com/medication/all/JSON  to request JSON data of all medications.
 
 ## Installation
 * **Google OAuth2** 
    - Visit [google developer page](https://console.developers.google.com/apis) and create OAuth client ID and client secret that will enable communication with google API libraries and the web application. The `project.py` and `login.html` implements the login and callback function for google OAuth2 authentication and authorization process. [Google documentation](https://developers.google.com/identity/protocols/OAuth2) for more information
  * **Operating Instruction**
-    - On the web browser run `www.jocoder22.com` 
+    - On the web browser run http://www.jocoder22.com/medication 
     - sign in with google email account
 
